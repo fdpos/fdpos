@@ -1,0 +1,1141 @@
+<!--
+  ==========================================================================
+  © 2026 Fageshwar Dewangan. All Rights Reserved.
+  System: FDPOS — Smart Restaurant POS & Digital Ordering SaaS (fdpos.online)
+  Registered Owner & Developer: Fageshwar Dewangan
+  Unauthorized copying, redistribution, or commercial use is strictly prohibited.
+  ==========================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Fageshwar Dewangan">
+    <meta name="copyright" content="© 2026 Fageshwar Dewangan. All Rights Reserved.">
+    <meta name="description" content="FDPOS (fdpos.online) — All-in-One Smart Restaurant POS, QR Ordering, Kitchen Display & Automated UPI Billing SaaS Platform.">
+    <title>FDPOS | Smart Restaurant POS & QR Ordering Platform (fdpos.online)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --accent: #0ea5e9;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-slate: #1e293b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.65; overflow-x: hidden; }
+
+        /* Top Utility & Policy Bar */
+        .top-utility-bar {
+            background: var(--dark);
+            color: #cbd5e1;
+            padding: 8px 6%;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .utility-links { display: flex; gap: 18px; flex-wrap: wrap; }
+        .utility-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .utility-links a:hover { color: #818cf8; }
+
+        /* Main Sticky Header & Logo */
+        header.main-navbar {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 14px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px -5px rgba(15, 23, 42, 0.05);
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .brand-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+        }
+        .brand-info h1 { font-size: 21px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.1; }
+        .brand-info span { font-size: 11px; font-weight: 600; color: var(--primary); display: block; margin-top: 2px; }
+
+        .nav-menu { display: flex; align-items: center; gap: 24px; list-style: none; }
+        .nav-menu a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s; }
+        .nav-menu a:hover { color: var(--primary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-outline {
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover { background: var(--primary-light); }
+        .btn-solid {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-solid:hover { transform: translateY(-1px); }
+
+        /* Active Trial Banner (Shown dynamically if client started trial) */
+        #activeTrialBar {
+            display: none;
+            background: linear-gradient(90deg, #065f46, #047857);
+            color: white;
+            padding: 12px 6%;
+            font-size: 13px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #activeTrialBar.expired { background: linear-gradient(90deg, #991b1b, #b91c1c); }
+
+        /* Hero Section */
+        .hero-section {
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a 70%);
+            color: white;
+            padding: 90px 6% 85px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 48px;
+            align-items: center;
+        }
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.18);
+            border: 1px solid rgba(129, 140, 248, 0.35);
+            color: #a5b4fc;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .hero-section h2 {
+            font-size: clamp(32px, 4.4vw, 52px);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            letter-spacing: -0.025em;
+        }
+        .hero-section h2 span {
+            background: linear-gradient(90deg, #818cf8, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-section p {
+            font-size: 16px;
+            color: #cbd5e1;
+            margin-bottom: 32px;
+            max-width: 600px;
+        }
+        .hero-cta-group { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+        .hero-btn-main {
+            background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+            color: white;
+            border: none;
+            padding: 15px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
+            transition: transform 0.2s;
+        }
+        .hero-btn-main:hover { transform: translateY(-2px); }
+        .hero-btn-ghost {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .hero-btn-ghost:hover { background: rgba(255, 255, 255, 0.14); }
+
+        .hero-trust-points { display: flex; gap: 22px; flex-wrap: wrap; font-size: 13px; color: #94a3b8; font-weight: 600; }
+        .hero-trust-points span { color: #34d399; }
+
+        /* Hero Live System Preview Card */
+        .hero-mockup {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+        }
+        .mockup-browser-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .mockup-url {
+            background: rgba(15, 23, 42, 0.8);
+            color: #38bdf8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 8px;
+            margin-left: 8px;
+            flex: 1;
+        }
+        .mockup-flow-item {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .mockup-flow-item:last-child { margin-bottom: 0; }
+        .mockup-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Common Section Styling */
+        .section-wrapper { padding: 85px 6%; max-width: 1280px; margin: 0 auto; }
+        .section-title-box { text-align: center; max-width: 760px; margin: 0 auto 56px; }
+        .section-tag {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+        }
+        .section-title-box h2 { font-size: clamp(26px, 3.5vw, 38px); font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 14px; }
+        .section-title-box p { font-size: 16px; color: var(--text-muted); }
+
+        /* Why Choose FDPOS Strip */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+            margin-bottom: 20px;
+        }
+        .why-card {
+            background: var(--card-bg);
+            padding: 26px;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary);
+        }
+        .why-card h4 { font-size: 17px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+        .why-card p { font-size: 14px; color: var(--text-muted); }
+
+        /* Detailed Features Grid (8 Core Modules) */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 28px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 18px 35px -10px rgba(15, 23, 42, 0.08);
+            border-color: #c7d2fe;
+        }
+        .f-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+        .feature-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--text-main); }
+        .feature-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+        .feature-highlight {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Security & Subdomain Architecture Section */
+        .security-banner {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            border-radius: 26px;
+            padding: 54px 44px;
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .security-banner h3 { font-size: 28px; font-weight: 800; margin-bottom: 14px; line-height: 1.25; }
+        .security-banner p { color: #cbd5e1; font-size: 15px; margin-bottom: 22px; }
+        .security-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+        .security-list li {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        /* How It Connects (Step-by-Step) */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 22px;
+        }
+        .step-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 26px;
+            position: relative;
+        }
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+        .step-box h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+        .step-box p { font-size: 13.5px; color: var(--text-muted); }
+
+        /* Single Transparent Pricing Section */
+        .pricing-container {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .plan-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 26px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.14);
+            position: relative;
+        }
+        .trial-ribbon {
+            position: absolute;
+            top: -15px;
+            right: 28px;
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+        .price-breakdown {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            margin: 24px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .price-box {
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .price-box span { font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; }
+        .price-box strong { font-size: 28px; font-weight: 800; color: var(--text-main); }
+        .price-box small { font-size: 12px; color: var(--primary); font-weight: 600; display: block; }
+
+        .plan-checklist { list-style: none; margin-bottom: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .plan-checklist li { font-size: 14px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .plan-checklist li::before { content: "✓"; color: var(--success); font-weight: 900; }
+
+        /* Modals (Onboarding Demo, Upgrade, & Policy Pages) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 22px;
+            max-width: 540px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 32px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+        }
+        .modal-close {
+            position: absolute;
+            top: 18px; right: 18px;
+            background: #f1f5f9;
+            border: none;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+        }
+        .form-group input:focus { border-color: var(--primary); background: white; }
+        .subdomain-preview {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 6px;
+            background: var(--primary-light);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        /* Official Footer */
+        footer.official-footer {
+            background: var(--dark);
+            color: #94a3b8;
+            padding: 55px 6% 30px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-top {
+            max-width: 1200px;
+            margin: 0 auto 36px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 36px;
+        }
+        .footer-top h4 { color: white; font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; cursor: pointer; }
+        .footer-links a:hover { color: white; }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .footer-bottom strong { color: white; }
+
+        @media (max-width: 860px) {
+            .hero-grid, .security-banner, .footer-top { grid-template-columns: 1fr; }
+            .nav-menu { display: none; }
+            .price-breakdown, .plan-checklist { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Policy & Quick Info Bar -->
+    <div class="top-utility-bar">
+        <div>🌐 Official Cloud POS Platform: <strong>fdpos.online</strong></div>
+        <div class="utility-links">
+            <a onclick="openInfoModal('privacy')">Privacy Policy</a>
+            <a onclick="openInfoModal('terms')">Terms & Conditions</a>
+            <a onclick="openInfoModal('about')">About Us</a>
+            <a onclick="openInfoModal('contact')">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Main Sticky Navbar with Logo & Tagline -->
+    <header class="main-navbar">
+        <a href="#" class="brand-wrap">
+            <div class="brand-logo">FD</div>
+            <div class="brand-info">
+                <h1>FDPOS</h1>
+                <span>Smart QR Ordering & Cloud POS System</span>
+            </div>
+        </a>
+
+        <ul class="nav-menu">
+            <li><a href="#why-us">Why FDPOS</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="btn-outline" onclick="openTrialModal()">Live Demo</button>
+            <button class="btn-solid" onclick="openTrialModal()">Start 14-Day Free Trial 🚀</button>
+        </div>
+    </header>
+
+    <!-- Dynamic 14-Day Trial Status Bar (Visible once client activates demo) -->
+    <div id="activeTrialBar">
+        <div id="trialStatusText">🎉 Your 14-Day Free Demo is Active!</div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn-solid" style="background: #facc15; color: #0f172a; padding: 6px 14px;" onclick="openUpgradeModal()">Upgrade Plan (₹2,999 + ₹499/mo)</button>
+            <button style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;" onclick="simulateTrialExpiry()">Simulate 14 Days Over</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-grid">
+            <div>
+                <div class="hero-pill">✨ Smart Restaurant Automation • fdpos.online</div>
+                <h2>Apne Restaurant Ko Banayein Ek <span>Smart Digital Restaurant</span></h2>
+                <p>No app downloads, no manual billing errors, and zero kitchen confusion. FDPOS ke saath aapke customers seedha table se QR scan karke order karte hain, kitchen me live notification bajta hai, aur exact bill amount ka UPI QR automatic generate hota hai.</p>
+                
+                <div class="hero-cta-group">
+                    <button class="hero-btn-main" onclick="openTrialModal()">🚀 Start 14-Day Free Demo</button>
+                    <a href="#features" class="hero-btn-ghost">Sabhi Features Dekhein ➔</a>
+                </div>
+
+                <div class="hero-trust-points">
+                    <div><span>✓</span> 14 Days Full Access Free</div>
+                    <div><span>✓</span> Dedicated Subdomain Portal</div>
+                    <div><span>✓</span> Instant UPI QR Billing</div>
+                </div>
+            </div>
+
+            <!-- Live System Architecture Card -->
+            <div class="hero-mockup">
+                <div class="mockup-browser-bar">
+                    <div class="dot" style="background:#ef4444;"></div>
+                    <div class="dot" style="background:#f59e0b;"></div>
+                    <div class="dot" style="background:#10b981;"></div>
+                    <div class="mockup-url">🔒 yourrestaurant.fdpos.online</div>
+                </div>
+
+                <div class="mockup-flow-item">
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:white;">📱 1. Customer QR Table Scan</div>
+                        <div style="font-size:11px; color:#94a3b8;">Bina app install kiye seedha menu se order</div>
+                    </div>
+                    <span class="mockup-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">Zero App</span>
+                </div>
+
+                <div class="mockup-flow-item">
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:white;">🔔 2. Live Kitchen Counter Alert</div>
+                        <div style="font-size:11px; color:#94a3b8;">Sound notification ke saath table & items live</div>
+                    </div>
+                    <span class="mockup-badge" style="background:rgba(99,102,241,0.25); color:#a5b4fc;">Real-Time</span>
+                </div>
+
+                <div class="mockup-flow-item">
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:white;">🔗 3. Smart Bill Merge & UPI QR</div>
+                        <div style="font-size:11px; color:#94a3b8;">Multiple orders merge + exact bill ka QR code</div>
+                    </div>
+                    <span class="mockup-badge" style="background:rgba(245,158,11,0.2); color:#fbbf24;">Auto QR</span>
+                </div>
+
+                <div class="mockup-flow-item">
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:white;">📊 4. Sales Reports & CRM</div>
+                        <div style="font-size:11px; color:#94a3b8;">Custom date sales graph, Excel/PDF & customer history</div>
+                    </div>
+                    <span class="mockup-badge" style="background:rgba(14,165,233,0.2); color:#38bdf8;">Analytics</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why FDPOS Is Right For Your Restaurant -->
+    <section id="why-us" class="section-wrapper">
+        <div class="section-title-box">
+            <span class="section-tag">Why FDPOS?</span>
+            <h2>Aapke Restaurant Ke Liye Ye System Kyo Zaroori Hai?</h2>
+            <p>Purane kagaz-pen aur slow billing system se chhutkara payein. FDPOS aapke staff ka kaam aadha karta hai aur customer experience ko modern banata hai.</p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <h4>⚡ 3x Fast Table Turnover</h4>
+                <p>Waiter ke aane aur menu dene ka intezar khatam. Customer QR scan karke turant order karta hai, jisse service fast hoti hai.</p>
+            </div>
+            <div class="why-card">
+                <h4>🧾 100% Billing Accuracy</h4>
+                <p>Haath se bill jodne ki galtiyan aur calculation ka jhanjhat khatam. Har item aur repeat order ka hisab system khud rakhta hai.</p>
+            </div>
+            <div class="why-card">
+                <h4>🌐 Apna Khud Ka Brand Portal</h4>
+                <p>Aapko aapke restaurant ke naam se dedicated subdomain (jaise <strong>yourbrand.fdpos.online</strong>) milta hai.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complete Features Breakdown -->
+    <section id="features" class="section-wrapper" style="padding-top: 20px;">
+        <div class="section-title-box">
+            <span class="section-tag">All-In-One Features</span>
+            <h2>Har Operation Ko Aasan Banane Wale Powerful Features</h2>
+            <p>Order lene se lekar kitchen preparation, billing, payment aur sales analysis tak—sab kuch ek hi platform par.</p>
+        </div>
+
+        <div class="features-grid">
+            <!-- Feature 1 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">📱</div>
+                    <h3>Bina App Download Kiye QR Ordering</h3>
+                    <p>Aapke customer ko phone mein koi app install karne ki zaroorat nahi hai. Table par lage QR code ko scan karte hi aapka digital menu khul jata hai aur customer seedha order place kar sakta hai.</p>
+                </div>
+                <div class="feature-highlight">Zero App Friction • Instant Browser Menu</div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">🔔</div>
+                    <h3>Kitchen Me Live Sound Notification</h3>
+                    <p>Jaise hi customer order submit karta hai, seedha aapke Kitchen Counter screen par sound alert ke saath naya order aa jata hai. Saath hi kitchen staff purani <strong>Order History</strong> bhi date ke hisab se dekh sakta hai.</p>
+                </div>
+                <div class="feature-highlight">Instant Kitchen Alert & Date-Wise History</div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">📲</div>
+                    <h3>Automatic Bill & Exact UPI QR Code</h3>
+                    <p>Haath se bill banane ka jhanjhat bilkul khatam. Jitne rupaye ka customer ka bill bana hai, billing screen par click karte hi utne exact amount ka UPI QR code automatically generate ho jata hai.</p>
+                </div>
+                <div class="feature-highlight">Zero Manual Calculation • Auto UPI QR</div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">🔗</div>
+                    <h3>Smart Multi-Order Bill Merging</h3>
+                    <p>Agar ek hi table ya customer dining ke dauran 2-3 baar alag-alag order deta hai, to bhi billing mein koi pareshani nahi hogi. Aap sabhi orders ko ek click mein <strong>Merge</strong> karke ek single final bill bana sakte hain.</p>
+                </div>
+                <div class="feature-highlight">1-Click Merge & Unmerge Bills</div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">🍽️</div>
+                    <h3>Live Table Availability Status</h3>
+                    <p>Counter par baithe-baithe dekhein ki kaunsa table abhi occupied (booked) hai aur kaunsa table naye guests ke liye available hai. Har table par chal rahe live order aur bill amount ki poori jankari real-time milti hai.</p>
+                </div>
+                <div class="feature-highlight">Real-Time Occupied vs Available View</div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">📋</div>
+                    <h3>Instant Menu Management</h3>
+                    <p>Apne digital menu ka poora control apne haath mein rakhein. Jab chahein nayi dish photo ke saath add karein, price update karein, ya koi item khatam hone par ek click mein <strong>Out of Stock</strong> mark karein.</p>
+                </div>
+                <div class="feature-highlight">Live Price, Photo & Stock Control</div>
+            </div>
+
+            <!-- Feature 7 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">👥</div>
+                    <h3>Customer Directory & Visit History</h3>
+                    <p>Aapke restaurant mein aane wale har customer ka naam, mobile number, kitni baar visit kiya aur unke purane orders ki poori history automatically save hoti rehti hai.</p>
+                </div>
+                <div class="feature-highlight">Automatic Customer Database & Visit Count</div>
+            </div>
+
+            <!-- Feature 8 -->
+            <div class="feature-card">
+                <div>
+                    <div class="f-icon">📊</div>
+                    <h3>Custom Sales Reports & Analytics</h3>
+                    <p>Aaj ki kamai, pichhle hafte, mahine ya apni pasand ki custom date range ke hisab se sales report aur visual graph dekhein. Ek click mein Excel aur PDF report download karein.</p>
+                </div>
+                <div class="feature-highlight">Visual Graphs + Excel & PDF Export</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Dedicated Login Section -->
+    <section id="security" class="section-wrapper" style="padding-top: 20px;">
+        <div class="security-banner">
+            <div>
+                <span class="section-tag" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc;">Enterprise-Grade Security</span>
+                <h3>Aapka Data 100% Surakshit Aur Private Hai</h3>
+                <p>FDPOS par har restaurant ka data alag aur encrypted cloud space mein surakshit rehta hai. Bina authorized login credentials ke koi bhi aapke restaurant ka dashboard nahi khol sakta.</p>
+                <button class="hero-btn-main" onclick="openTrialModal()">Apna Secure Account Banayein ➔</button>
+            </div>
+
+            <ul class="security-list">
+                <li>
+                    <span style="font-size: 20px;">🔐</span>
+                    <div>
+                        <strong>Dedicated Staff Login ID & Password:</strong><br>
+                        <span style="color: #94a3b8; font-size: 13px;">Aapko apne <strong>Kitchen Counter</strong> aur <strong>Billing Counter</strong> ke liye secure Login ID aur Password milte hain. Aapke aur aapke staff ke alawa koi aur ise access nahi kar payega.</span>
+                    </div>
+                </li>
+                <li>
+                    <span style="font-size: 20px;">🌐</span>
+                    <div>
+                        <strong>Isolated Subdomain Architecture:</strong><br>
+                        <span style="color: #94a3b8; font-size: 13px;">Har restaurant ko unka apna dedicated subdomain (<strong>yourname.fdpos.online</strong>) milta hai, jisse aapka menu, orders aur billing records bilkul alag aur safe rehte hain.</span>
+                    </div>
+                </li>
+                <li>
+                    <span style="font-size: 20px;">📍</span>
+                    <div>
+                        <strong>Smart Location-Verified Ordering:</strong><br>
+                        <span style="color: #94a3b8; font-size: 13px;">Sirf restaurant ke andar baithe genuine customers hi order place kar sakte hain, jisse fake ya bahar se aane wale spam orders se suraksha milti hai.</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- How It Works & Connects Directly -->
+    <section class="section-wrapper" style="padding-top: 20px;">
+        <div class="section-title-box">
+            <span class="section-tag">Easy Onboarding</span>
+            <h2>4 Aasan Steps Mein Apna Restaurant Live Karein</h2>
+            <p>Kisi bhi mehenge hardware ya complex installation ki zaroorat nahi hai.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-box">
+                <div class="step-number">1</div>
+                <h4>14-Day Free Demo Activate Karein</h4>
+                <p>Apne restaurant ka naam aur pasandida subdomain chunein aur bina kisi payment ke turant 14 din ka free trial shuru karein.</p>
+            </div>
+            <div class="step-box">
+                <div class="step-number">2</div>
+                <h4>Apna Menu & UPI Set Karein</h4>
+                <p>Apni Login ID se Billing/Admin dashboard kholein, apni dishes add karein aur tables ke liye QR codes print karke lagayein.</p>
+            </div>
+            <div class="step-box">
+                <div class="step-number">3</div>
+                <h4>Live Orders & Kitchen Chalayein</h4>
+                <p>Customer QR scan karke order dega, kitchen mein bell bajegi aur counter par automatic UPI QR se payment collect hogi.</p>
+            </div>
+            <div class="step-box">
+                <div class="step-number">4</div>
+                <h4>14 Din Baad Plan Upgrade Karein</h4>
+                <p>System se poori tarah santusht hone ke baad one-time setup aur nominal monthly plan ke saath hamesha ke liye continue karein.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Single Transparent Pricing Section -->
+    <section id="pricing" class="section-wrapper" style="padding-top: 20px;">
+        <div class="section-title-box">
+            <span class="section-tag">Simple & Transparent Pricing</span>
+            <h2>Pehle 14 Din Free Istemaal Karein, Phir Subscribe Karein</h2>
+            <p>Koi chhupa hua charge nahi. Ek simple aur affordable plan jo har restaurant ke budget mein fit baithta hai.</p>
+        </div>
+
+        <div class="pricing-container">
+            <div class="plan-card">
+                <div class="trial-ribbon">🎁 First 14 Days 100% FREE Demo</div>
+                <h3 style="font-size: 24px; font-weight: 800;">FDPOS All-in-One Smart POS Plan</h3>
+                <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Complete Digital Menu, Kitchen Counter & Billing Dashboard</p>
+
+                <div class="price-breakdown">
+                    <div class="price-box">
+                        <span>One-Time Setup Fee</span>
+                        <strong>₹2,999</strong>
+                        <small>Subdomain + QR + Full Setup (Sirf Ek Baar)</small>
+                    </div>
+                    <div class="price-box">
+                        <span>Monthly Subscription</span>
+                        <strong>₹499<span style="font-size: 14px; display: inline; font-weight: 600;">/month</span></strong>
+                        <small>Cloud Hosting, Updates & Support</small>
+                    </div>
+                </div>
+
+                <ul class="plan-checklist">
+                    <li>Dedicated Subdomain Portal</li>
+                    <li>Zero-App QR Table Ordering</li>
+                    <li>Kitchen Live Display & Alerts</li>
+                    <li>Auto Exact-Amount UPI QR</li>
+                    <li>Multi-Order Bill Merging</li>
+                    <li>Live Table Status Overview</li>
+                    <li>Instant Menu & Stock Control</li>
+                    <li>Sales Reports (Excel & PDF)</li>
+                </ul>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="hero-btn-main" style="width: 100%; font-size: 16px;" onclick="openTrialModal()">🚀 Start Your 14-Day Free Demo Now</button>
+                    <button class="btn-outline" style="width: 100%; padding: 12px;" onclick="openUpgradeModal()">Direct Plan Purchase / Upgrade Karein</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Official Footer with Registered Ownership -->
+    <footer class="official-footer">
+        <div class="footer-top">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div class="brand-logo" style="width: 36px; height: 36px; font-size: 15px;">FD</div>
+                    <span style="font-size: 20px; font-weight: 800; color: white;">FDPOS</span>
+                </div>
+                <p style="font-size: 13px; line-height: 1.7;">FDPOS (fdpos.online) ek modern cloud-based Restaurant POS aur QR Digital Ordering SaaS platform hai, jo restaurants ko fast, paperless aur smart banata hai.</p>
+            </div>
+            <div>
+                <h4>Platform Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#why-us">Why FDPOS</a></li>
+                    <li><a href="#features">All Features</a></li>
+                    <li><a href="#security">Security & Login</a></li>
+                    <li><a href="#pricing">14-Day Free Demo & Pricing</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal & Support</h4>
+                <ul class="footer-links">
+                    <li><a onclick="openInfoModal('privacy')">Privacy Policy</a></li>
+                    <li><a onclick="openInfoModal('terms')">Terms & Conditions</a></li>
+                    <li><a onclick="openInfoModal('about')">About Us</a></li>
+                    <li><a onclick="openInfoModal('contact')">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 <strong>Fageshwar Dewangan</strong> • All Rights Reserved.</div>
+            <div>Registered Software & Digital POS System owned by <strong>Fageshwar Dewangan</strong>. Unauthorized copying or reproduction is prohibited.</div>
+        </div>
+    </footer>
+
+    <!-- 1. 14-Day Free Demo Activation Modal -->
+    <div id="trialModal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('trialModal')">✕</button>
+            <span class="section-tag">14-Day Free Trial</span>
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;">Apna Restaurant Demo Shuru Karein</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Details bharein aur turant 14 din ke liye apna FDPOS portal activate karein.</p>
+
+            <div class="form-group">
+                <label>🏪 Restaurant Ka Naam</label>
+                <input type="text" id="demoRestName" placeholder="e.g. Moonlight Restaurant" oninput="updateSubdomainPreview()">
+            </div>
+            <div class="form-group">
+                <label>🌐 Apna Pasandida Subdomain Chunein</label>
+                <input type="text" id="demoSubdomain" placeholder="e.g. moonlight" oninput="updateSubdomainPreview()">
+                <div class="subdomain-preview" id="subdomainPreviewText">Aapka Portal URL: yourrestaurant.fdpos.online</div>
+            </div>
+            <div class="form-group">
+                <label>👤 Owner / Manager Ka Naam</label>
+                <input type="text" id="demoOwnerName" placeholder="e.g. Rajesh Verma">
+            </div>
+            <div class="form-group">
+                <label>📱 Mobile Number (WhatsApp)</label>
+                <input type="tel" id="demoOwnerPhone" placeholder="10-digit mobile number" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label>📧 Login Email ID</label>
+                <input type="email" id="demoOwnerEmail" placeholder="owner@restaurant.com">
+            </div>
+
+            <button class="hero-btn-main" style="width: 100%; margin-top: 8px;" onclick="activate14DayDemo()">Activate 14-Day Free Demo 🚀</button>
+        </div>
+    </div>
+
+    <!-- 2. Upgrade / Plan Purchase Modal (Triggered after 14 days or on direct upgrade) -->
+    <div id="upgradeModal" class="modal-overlay">
+        <div class="modal-box" style="text-align: center;">
+            <button class="modal-close" onclick="closeModal('upgradeModal')">✕</button>
+            <div style="width: 54px; height: 54px; background: #fef3c7; color: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px;">👑</div>
+            <h3 id="upgradeModalTitle" style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Upgrade to FDPOS Pro</h3>
+            <p id="upgradeModalDesc" style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">Apne restaurant portal ko bina kisi rukawat ke continue rakhne ke liye subscription activate karein.</p>
+
+            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 14px; padding: 18px; text-align: left; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                    <span>One-Time Setup Fee:</span>
+                    <strong>₹2,999</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
+                    <span>First Month Subscription:</span>
+                    <strong>₹499</strong>
+                </div>
+                <div style="border-top: 1px dashed var(--border-color); padding-top: 10px; display: flex; justify-content: space-between; font-size: 16px; color: var(--primary);">
+                    <strong>Total Payable Now:</strong>
+                    <strong>₹3,498</strong>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">*Agle mahine se sirf ₹499/month rent lagega.</div>
+            </div>
+
+            <button class="hero-btn-main" style="width: 100%;" onclick="confirmUpgradeRequest()">Proceed to Activate Subscription ✅</button>
+        </div>
+    </div>
+
+    <!-- 3. Policy & Info Modal (Privacy Policy, Terms, About Us, Contact Us) -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('infoModal')">✕</button>
+            <h3 id="infoModalTitle" style="font-size: 22px; font-weight: 800; margin-bottom: 14px; color: var(--primary);">Title</h3>
+            <div id="infoModalBody" style="font-size: 14px; color: var(--text-muted); line-height: 1.7;"></div>
+        </div>
+    </div>
+
+    <script>
+        const TRIAL_DAYS = 14;
+        const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+        window.onload = function() {
+            checkTrialStatus();
+        };
+
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        function openTrialModal() {
+            openModal('trialModal');
+        }
+
+        function openUpgradeModal() {
+            openModal('upgradeModal');
+        }
+
+        function updateSubdomainPreview() {
+            const rawSub = document.getElementById("demoSubdomain").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+            const restName = document.getElementById("demoRestName").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+            const finalSub = rawSub || restName || "yourrestaurant";
+            document.getElementById("subdomainPreviewText").innerText = `Aapka Portal URL: ${finalSub}.fdpos.online`;
+        }
+
+        function activate14DayDemo() {
+            const restName = document.getElementById("demoRestName").value.trim();
+            const rawSub = document.getElementById("demoSubdomain").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+            const ownerName = document.getElementById("demoOwnerName").value.trim();
+            const ownerPhone = document.getElementById("demoOwnerPhone").value.trim();
+            const ownerEmail = document.getElementById("demoOwnerEmail").value.trim();
+
+            if (!restName || !ownerName || ownerPhone.length < 10 || !ownerEmail) {
+                alert("Kripya restaurant ka naam, owner name, 10-digit mobile number aur email sahi se bharein!");
+                return;
+            }
+
+            const subdomain = rawSub || restName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const trialData = {
+                restName,
+                subdomain,
+                ownerName,
+                ownerPhone,
+                ownerEmail,
+                startTime: Date.now(),
+                planStatus: "trial"
+            };
+
+            localStorage.setItem("fdpos_tenant_trial", JSON.stringify(trialData));
+            closeModal('trialModal');
+            checkTrialStatus();
+
+            alert(`🎉 Badhai ho ${ownerName}!\n\nAapka 14-Day Free Demo activate ho gaya hai.\nPortal URL: ${subdomain}.fdpos.online\nLogin Email: ${ownerEmail}`);
+        }
+
+        function checkTrialStatus() {
+            const raw = localStorage.getItem("fdpos_tenant_trial");
+            const bar = document.getElementById("activeTrialBar");
+            const statusText = document.getElementById("trialStatusText");
+            if (!raw) {
+                bar.style.display = "none";
+                return;
+            }
+
+            const data = JSON.parse(raw);
+            bar.style.display = "flex";
+
+            if (data.planStatus === "pro") {
+                bar.classList.remove("expired");
+                statusText.innerHTML = `✅ <strong>${data.restName}</strong> (${data.subdomain}.fdpos.online) — Active Pro Subscription`;
+                return;
+            }
+
+            const elapsedDays = Math.floor((Date.now() - data.startTime) / MS_PER_DAY);
+            const remainingDays = TRIAL_DAYS - elapsedDays;
+
+            if (remainingDays <= 0) {
+                bar.classList.add("expired");
+                statusText.innerHTML = `⚠️ <strong>${data.restName}</strong> (${data.subdomain}.fdpos.online) ka 14-Day Free Demo samapt ho gaya hai! Continue karne ke liye Upgrade karein.`;
+                document.getElementById("upgradeModalTitle").innerText = "14-Day Free Demo Complete Ho Gaya Hai";
+                document.getElementById("upgradeModalDesc").innerText = `${data.restName} (${data.subdomain}.fdpos.online) ka 14 din ka trial period poora ho chuka hai. Apne restaurant ka POS aur QR system continue rakhne ke liye abhi upgrade karein.`;
+                openUpgradeModal();
+            } else {
+                bar.classList.remove("expired");
+                statusText.innerHTML = `🎉 <strong>${data.restName}</strong> (${data.subdomain}.fdpos.online) — 14-Day Free Demo Active (<strong>${remainingDays} Days Left</strong>)`;
+            }
+        }
+
+        function simulateTrialExpiry() {
+            const raw = localStorage.getItem("fdpos_tenant_trial");
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            data.startTime = Date.now() - (15 * MS_PER_DAY);
+            data.planStatus = "trial";
+            localStorage.setItem("fdpos_tenant_trial", JSON.stringify(data));
+            checkTrialStatus();
+        }
+
+        function confirmUpgradeRequest() {
+            const raw = localStorage.getItem("fdpos_tenant_trial");
+            if (raw) {
+                const data = JSON.parse(raw);
+                data.planStatus = "pro";
+                localStorage.setItem("fdpos_tenant_trial", JSON.stringify(data));
+            }
+            closeModal('upgradeModal');
+            checkTrialStatus();
+            alert("✅ Thank you! Aapki Pro Subscription request (₹2,999 Setup + ₹499/mo) register ho gayi hai. Hamari team jald hi aapka subdomain permanently activate kar degi.");
+        }
+
+        function openInfoModal(type) {
+            const titleEl = document.getElementById("infoModalTitle");
+            const bodyEl = document.getElementById("infoModalBody");
+
+            if (type === "privacy") {
+                titleEl.innerText = "Privacy Policy — FDPOS (fdpos.online)";
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom:10px;"><strong>1. Data Ownership & Security:</strong> FDPOS par har restaurant client ka menu, order history, customer records aur sales data unke dedicated cloud space mein surakshit rehta hai. Hum kisi bhi restaurant ka data third-party ko sell ya share nahi karte.</p>
+                    <p style="margin-bottom:10px;"><strong>2. Secure Staff Access:</strong> Kitchen aur Billing dashboards password-protected hain aur sirf authorized login ID se hi access kiye ja sakte hain.</p>
+                    <p><strong>3. Location Verification:</strong> Customer ordering ke samay location sirf restaurant premises verify karne ke liye istemal hoti hai aur background mein track nahi ki jati.</p>
+                `;
+            } else if (type === "terms") {
+                titleEl.innerText = "Terms & Conditions — FDPOS";
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom:10px;"><strong>1. 14-Day Free Demo:</strong> Naye restaurant clients ko system samajhne aur test karne ke liye 14 din ka free demo diya jata hai.</p>
+                    <p style="margin-bottom:10px;"><strong>2. Subscription & Billing:</strong> Demo ke baad service continue rakhne ke liye ₹2,999 one-time setup fee aur ₹499/month subscription rent lagu hoga.</p>
+                    <p><strong>3. Intellectual Property:</strong> FDPOS software, source code aur design <strong>Fageshwar Dewangan</strong> ki registered sampatti hai. Bina anumati copy ya redistribute karna kanoonan mana hai.</p>
+                `;
+            } else if (type === "about") {
+                titleEl.innerText = "About FDPOS (fdpos.online)";
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom:10px;"><strong>FDPOS</strong> ek all-in-one cloud POS aur contactless QR ordering platform hai, jise chhote cafes se lekar bade restaurants ko digital aur smart banane ke liye design kiya gaya hai.</p>
+                    <p>Iska mukhya uddeshya restaurants ko bina mehenge hardware ke fast ordering, live kitchen coordination, instant UPI QR billing aur accurate business analytics pradan karna hai.</p>
+                `;
+            } else if (type === "contact") {
+                titleEl.innerText = "Contact Us & Sales Support";
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom:10px;">Naya demo lene, custom subdomain setup karwane ya kisi bhi technical sahayata ke liye humse sampark karein:</p>
+                    <p style="margin-bottom:6px;"><strong>🌐 Website:</strong> fdpos.online</p>
+                    <p style="margin-bottom:6px;"><strong>📧 Support Email:</strong> support@fdpos.online</p>
+                    <p><strong>👨‍💻 Founder & Developer:</strong> Fageshwar Dewangan</p>
+                `;
+            }
+            openModal('infoModal');
+        }
+    </script>
+</body>
+</html>

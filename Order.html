@@ -1,0 +1,575 @@
+<!--
+  ==========================================================================
+  © 2026 Fageshwar Dewangan. All Rights Reserved.
+  System: Moonlight Restaurant Digital Menu & POS System
+  Registered Owner & Developer: Fageshwar Dewangan
+  Unauthorized copying, redistribution, or commercial use is strictly prohibited.
+  ==========================================================================
+-->
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Fageshwar Dewangan">
+    <meta name="copyright" content="© 2026 Fageshwar Dewangan. All Rights Reserved.">
+    <title>Moonlight Restaurant • Digital Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #16a34a;
+            --primary-dark: #15803d;
+            --primary-light: #dcfce7;
+            --accent: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #f1f5f9; color: var(--text-main); padding-bottom: 110px; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Header with Branding & Integrated Customer Bar */
+        header { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; text-align: center; padding: 20px 16px 14px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        header h1 { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+        header p { font-size: 12px; opacity: 0.8; font-weight: 500; }
+        .table-badge-header { background: #facc15; color: #713f12; padding: 4px 14px; border-radius: 20px; font-weight: 700; display: inline-block; margin-top: 8px; font-size: 11px; }
+        
+        .header-customer-bar {
+            max-width: 850px;
+            margin: 14px auto 0;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.14);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            gap: 10px;
+        }
+        .header-cust-details { display: flex; flex-direction: column; }
+        .header-cust-name { font-size: 14px; font-weight: 700; color: #ffffff; }
+        .header-cust-phone { font-size: 12px; color: #94a3b8; margin-top: 1px; }
+        .header-change-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: #facc15;
+            border: 1px solid rgba(250, 204, 21, 0.35);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .header-change-btn:hover { background: rgba(250, 204, 21, 0.22); }
+
+        .container { max-width: 850px; width: 100%; margin: 20px auto; padding: 0 16px; flex: 1; }
+        
+        .active-orders-banner { background: linear-gradient(135deg, #fefce8, #fef9c3); border: 1px solid #fde047; border-radius: 16px; padding: 16px; margin-bottom: 20px; color: #713f12; }
+        .active-orders-banner h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .active-orders-list { font-size: 13px; max-height: 140px; overflow-y: auto; margin-bottom: 12px; list-style: none; }
+        .active-orders-list li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #fef08a; font-weight: 500; }
+        .clear-orders-btn { background: #ef4444; color: white; border: none; padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        
+        .top-controls { background: var(--card-bg); padding: 16px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .input-group input, .input-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; outline: none; background: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .input-group textarea { resize: none; height: 65px; }
+
+        .category-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 20px; scrollbar-width: none; }
+        .category-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .cat-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0fdf4; }
+        .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .section-heading { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 16px; }
+        .menu-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+        .menu-item { background: var(--card-bg); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--border-color); transition: transform 0.25s; }
+        .menu-item:hover { transform: translateY(-4px); }
+        .item-img-container { width: 100%; height: 160px; overflow: hidden; background: #e2e8f0; position: relative; }
+        .item-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .cat-tag { position: absolute; top: 10px; right: 10px; background: rgba(15, 23, 42, 0.75); color: white; font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+        .item-content { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .item-details h3 { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; }
+        .veg-icon { display: inline-block; min-width: 12px; width: 12px; height: 12px; border: 2px solid var(--primary); position: relative; margin-top: 4px; border-radius: 2px; }
+        .veg-icon::after { content: ''; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; position: absolute; top: 1px; left: 1px; }
+        .item-footer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+        .price { font-weight: 800; color: var(--text-main); font-size: 17px; }
+        .qty-controls { display: flex; align-items: center; gap: 10px; background: var(--primary-light); padding: 4px 10px; border-radius: 30px; border: 1px solid #bbf7d0; }
+        .qty-btn { background: var(--primary); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 15px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .qty-count { font-size: 14px; font-weight: 700; min-width: 16px; text-align: center; color: var(--primary-dark); }
+        .no-results { grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 16px; color: var(--text-muted); font-size: 15px; border: 1px solid var(--border-color); }
+
+        /* Developer Copyright Footer */
+        .dev-copyright-footer {
+            max-width: 850px;
+            width: 100%;
+            margin: 28px auto 10px;
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .dev-copyright-footer strong { color: var(--text-main); font-weight: 700; }
+
+        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.95); padding: 16px 24px; box-shadow: 0 -10px 25px -5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 100; border-top: 1px solid var(--border-color); }
+        .total-box { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+        .total-box span { color: var(--text-main); font-size: 20px; font-weight: 800; display: block; }
+        .order-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 12px 28px; font-size: 15px; font-weight: 700; border-radius: 30px; cursor: pointer; }
+
+        .cart-modal-overlay, .ttt-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 1500; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .cart-modal-container { max-width: 450px; width: 90%; background: #ffffff; padding: 24px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid var(--border-color); max-height: 85vh; display: flex; flex-direction: column; }
+        .cart-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        .cart-close-btn { background: #f1f5f9; color: var(--text-muted); border: none; width: 32px; height: 32px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        .cart-items-list { overflow-y: auto; max-height: 50vh; margin-bottom: 16px; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color); }
+        .cart-modal-footer { border-top: 1px solid var(--border-color); padding-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+        .cart-total-row { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+        .cart-confirm-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer; text-align: center; }
+
+        .ttt-container { max-width: 340px; width: 90%; background: radial-gradient(circle at top, #1e1b4b, #0f172a); padding: 24px; border-radius: 24px; text-align: center; color: white; position: relative; }
+        .ttt-close-btn { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.1); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        .ttt-grid { display: grid; grid-template-columns: repeat(3, 80px); gap: 8px; justify-content: center; margin-bottom: 18px; }
+        .ttt-cell { width: 80px; height: 80px; font-size: 32px; font-weight: 800; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .cell-x { color: #38bdf8; } .cell-o { color: #f43f5e; } .cell-winning { background: rgba(56, 189, 248, 0.25) !important; }
+        .ttt-reset-btn { background: linear-gradient(135deg, #38bdf8, #0284c7); color: white; font-size: 14px; padding: 10px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; }
+    </style>
+    <script src="tenant-config.js"></script>
+</head>
+<body>
+
+    <div id="customerModal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div style="background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--border-color);">
+            <div style="width: 50px; height: 50px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 16px;">🌙</div>
+            <h2 style="margin-bottom: 6px; font-size: 20px; font-weight: 800;">Welcome to Moonlight Restaurant</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Order karne ke liye apni details darj karein.</p>
+            <div style="margin-bottom: 14px; text-align: left;"><input type="text" id="popupName" placeholder="उदा. Rahul Sharma" style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; outline: none; background: #f8fafc;"></div>
+            <div style="margin-bottom: 24px; text-align: left;"><input type="tel" id="popupPhone" placeholder="10 Anko ka mobile number" maxlength="10" style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; outline: none; background: #f8fafc;"></div>
+            <button onclick="saveCustomerDetails()" style="background: var(--primary); color: white; border: none; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer;">Menu Dekhein & Order Karein ➔</button>
+        </div>
+    </div>
+
+    <div id="cartModal" class="cart-modal-overlay">
+        <div class="cart-modal-container">
+            <div class="cart-modal-header">
+                <h3>🛍️ Aapka Order Summary</h3>
+                <button class="cart-close-btn" onclick="closeCartModal()">✕</button>
+            </div>
+            <ul class="cart-items-list" id="cartModalItemsList"></ul>
+            <div class="cart-modal-footer">
+                <div class="cart-total-row"><span>Grand Total:</span><span id="cartModalTotal" style="color: var(--primary);">₹0</span></div>
+                <div class="input-group"><textarea id="customerNote" placeholder="✍️ Special Instructions / Note..."></textarea></div>
+                <button class="cart-confirm-btn" id="finalConfirmOrderBtn" onclick="verifyLocationAndOrder()">Final Confirm & Place Order 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameModal" class="ttt-modal-overlay">
+        <div class="ttt-container">
+            <button class="ttt-close-btn" onclick="closeGamePopup()">✕</button>
+            <div style="font-size: 16px; color: #38bdf8; margin-bottom: 8px; font-weight: 700;">🎮 Order Done! Let's Play</div>
+            <div id="tttStatus" style="font-size: 12px; color: #cbd5e1; margin-bottom: 16px;">Player X ki baari hai</div>
+            <div class="ttt-grid">
+                <button class="ttt-cell" onclick="makeMove(0)" id="cell-0"></button><button class="ttt-cell" onclick="makeMove(1)" id="cell-1"></button><button class="ttt-cell" onclick="makeMove(2)" id="cell-2"></button>
+                <button class="ttt-cell" onclick="makeMove(3)" id="cell-3"></button><button class="ttt-cell" onclick="makeMove(4)" id="cell-4"></button><button class="ttt-cell" onclick="makeMove(5)" id="cell-5"></button>
+                <button class="ttt-cell" onclick="makeMove(6)" id="cell-6"></button><button class="ttt-cell" onclick="makeMove(7)" id="cell-7"></button><button class="ttt-cell" onclick="makeMove(8)" id="cell-8"></button>
+            </div>
+            <button class="ttt-reset-btn" onclick="resetTTT()">RESTART 🔄</button>
+        </div>
+    </div>
+
+    <header>
+        <h1>Moonlight Restaurant</h1>
+        <p>Swad jo dil jeet le • Fresh & Hygienic</p>
+        <div class="table-badge-header" id="tableBadge">🪑 Table: Loading...</div>
+
+        <!-- Customer Name & Phone Inside Branding Header (Left Side) -->
+        <div class="header-customer-bar">
+            <div class="header-cust-details">
+                <span class="header-cust-name">👤 <span id="displayCustomerName">-</span></span>
+                <span class="header-cust-phone" id="displayCustomerPhone">📱 -</span>
+            </div>
+            <button class="header-change-btn" onclick="editDetails()">Change ✏️</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="activeOrdersBanner" class="active-orders-banner" style="display: none;">
+            <h3><span>📋 Aapke Active Orders <span id="activeTotalBadge" style="font-size: 12px; background: #fef08a; padding: 2px 8px; border-radius: 6px;"></span></span><button class="clear-orders-btn" onclick="clearCustomerOrders()">✅ Paid</button></h3>
+            <ul class="active-orders-list" id="activeOrdersList"></ul>
+        </div>
+
+        <div class="top-controls">
+            <div class="input-group"><input type="text" id="searchInput" placeholder="🔍 खाना खोजें..." onkeyup="handleSearch()"></div>
+        </div>
+
+        <div class="category-bar" id="categoryBar">
+            <button class="cat-btn active" onclick="filterCategory('All', this)">🍽️ All Items</button>
+        </div>
+
+        <div class="section-heading"><span id="currentCategoryTitle">🍽️ All Menu Items</span></div>
+        <div class="menu-list" id="menuContainer"><div class="no-results">Menu load ho raha hai...</div></div>
+    </div>
+
+    <!-- Registered Copyright Footer -->
+    <footer class="dev-copyright-footer">
+        <div>© 2026 <strong>Fageshwar Dewangan</strong> • All Rights Reserved.</div>
+        <div>Registered Software & Digital POS System owned by <strong>Fageshwar Dewangan</strong>. Unauthorized copying or reproduction is prohibited.</div>
+    </footer>
+
+    <div class="bottom-bar">
+        <div class="total-box">कुल राशि: <span id="totalAmount">0</span></div>
+        <button class="order-btn" onclick="openCartModal()">ऑर्डर करें (Place Order)</button>
+    </div>
+
+    <script>
+        const currentTenantId = typeof getTenantId === "function" ? getTenantId() : "demo";
+        const FIREBASE_URL = typeof getTenantDbUrl === "function" ? getTenantDbUrl() : "https://fd-pos-default-rtdb.firebaseio.com/tenants/demo/";
+        let tenantLocationConfig = null;
+
+        async function loadTenantLocation() {
+            try {
+                const res = await fetch(`${FIREBASE_URL}settings/location.json`);
+                const loc = await res.json();
+                if (loc && typeof loc.lat === "number" && typeof loc.lng === "number") {
+                    tenantLocationConfig = {
+                        lat: loc.lat,
+                        lng: loc.lng,
+                        radiusMeters: typeof loc.radiusMeters === "number" && loc.radiusMeters > 0 ? loc.radiusMeters : 25
+                    };
+                } else {
+                    tenantLocationConfig = null;
+                }
+            } catch (err) {
+                console.error("Failed to load tenant location:", err);
+                tenantLocationConfig = null;
+            }
+        }
+
+        function getTenantStorageKey(baseKey) {
+            return `${currentTenantId}_${baseKey}`;
+        }
+
+        function getTableFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('table')) return params.get('table');
+            const q = window.location.search.replace('?', '');
+            if (q) return decodeURIComponent(q.split('=')[0]);
+            return "Table 1";
+        }
+
+        const currentTable = getTableFromURL();
+        document.getElementById("tableBadge").innerText = "🪑 " + currentTable;
+
+        let menuItemsMap = {};
+        let cart = {};
+        let selectedCategory = "All";
+        let searchQuery = "";
+
+        window.onload = function() {
+            const savedName = localStorage.getItem(getTenantStorageKey("savedCustomerName"));
+            const savedPhone = localStorage.getItem(getTenantStorageKey("savedCustomerPhone"));
+            if (savedName && savedPhone) {
+                document.getElementById("customerModal").style.display = "none";
+                document.getElementById("displayCustomerName").innerText = savedName;
+                document.getElementById("displayCustomerPhone").innerText = "📱 " + savedPhone;
+                checkCustomerActiveOrders(savedPhone);
+            } else {
+                document.getElementById("customerModal").style.display = "flex";
+            }
+            loadTenantLocation();
+            fetchLiveMenu();
+        };
+
+        async function fetchLiveMenu() {
+            try {
+                const res = await fetch(`${FIREBASE_URL}menu.json`);
+                const data = await res.json();
+                menuItemsMap = data && !data.error ? data : {};
+                buildDynamicCategories();
+                renderMenu();
+            } catch (error) {
+                document.getElementById("menuContainer").innerHTML = `<div class="no-results">❌ Menu load karne mein samasya aayi.</div>`;
+            }
+        }
+
+        function buildDynamicCategories() {
+            const catBar = document.getElementById("categoryBar");
+            catBar.innerHTML = `<button class="cat-btn ${selectedCategory === 'All' ? 'active' : ''}" onclick="filterCategory('All', this)">🍽️ All Items</button>`;
+
+            let uniqueCategories = new Set();
+            Object.keys(menuItemsMap).forEach(id => {
+                const item = menuItemsMap[id];
+                if (item && item.category) {
+                    uniqueCategories.add(item.category.trim());
+                }
+            });
+
+            uniqueCategories.forEach(cat => {
+                const isActive = selectedCategory === cat ? 'active' : '';
+                catBar.innerHTML += `<button class="cat-btn ${isActive}" onclick="filterCategory('${cat}', this)">📂 ${cat}</button>`;
+            });
+        }
+
+        function saveCustomerDetails() {
+            const name = document.getElementById("popupName").value.trim();
+            const phone = document.getElementById("popupPhone").value.trim();
+            if (!name || !phone || phone.length < 10) { alert("Kripya sahi naam aur 10 anko ka mobile number bharein!"); return; }
+            localStorage.setItem(getTenantStorageKey("savedCustomerName"), name);
+            localStorage.setItem(getTenantStorageKey("savedCustomerPhone"), phone);
+            document.getElementById("customerModal").style.display = "none";
+            document.getElementById("displayCustomerName").innerText = name;
+            document.getElementById("displayCustomerPhone").innerText = "📱 " + phone;
+            checkCustomerActiveOrders(phone);
+        }
+
+        function checkCustomerActiveOrders(phone) {
+            if (!phone) return;
+            const banner = document.getElementById("activeOrdersBanner");
+            const listEl = document.getElementById("activeOrdersList");
+            const badgeEl = document.getElementById("activeTotalBadge");
+            let savedOrders = JSON.parse(localStorage.getItem(getTenantStorageKey("customerActiveOrders"))) || [];
+            const currentTime = new Date().getTime();
+            let freshOrders = savedOrders.filter(o => o.timestamp && (currentTime - o.timestamp) < (3 * 3600 * 1000));
+            localStorage.setItem(getTenantStorageKey("customerActiveOrders"), JSON.stringify(freshOrders));
+
+            if (freshOrders.length > 0) {
+                let activeItems = [];
+                let grandTotal = 0;
+                freshOrders.forEach(ord => {
+                    grandTotal += Number(ord.totalBill || 0);
+                    if (ord.items) ord.items.forEach(i => activeItems.push(`<li><span>${i.name} (x${i.quantity})</span> <b>₹${i.subtotal}</b></li>`));
+                });
+                listEl.innerHTML = activeItems.join('');
+                badgeEl.innerText = `Total: ₹${grandTotal}`;
+                banner.style.display = "block";
+            } else { banner.style.display = "none"; }
+        }
+
+        function clearCustomerOrders() {
+            if (confirm("Kya aapne payment kar diya hai?")) {
+                localStorage.removeItem(getTenantStorageKey("customerActiveOrders"));
+                document.getElementById("activeOrdersBanner").style.display = "none";
+            }
+        }
+
+        function editDetails() {
+            localStorage.removeItem(getTenantStorageKey("savedCustomerName"));
+            localStorage.removeItem(getTenantStorageKey("savedCustomerPhone"));
+            location.reload();
+        }
+
+        function filterCategory(category, btnElement) {
+            selectedCategory = category;
+            document.querySelectorAll(".cat-btn").forEach(btn => btn.classList.remove("active"));
+            if (btnElement) btnElement.classList.add("active");
+            document.getElementById("currentCategoryTitle").innerText = category === 'All' ? '🍽️ All Menu Items' : `📂 ${category}`;
+            renderMenu();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+            renderMenu();
+        }
+
+        function renderMenu() {
+            const container = document.getElementById("menuContainer");
+            container.innerHTML = "";
+            const keys = Object.keys(menuItemsMap);
+            if (keys.length === 0) { container.innerHTML = `<div class="no-results">😕 Menu khali hai.</div>`; return; }
+
+            let filteredCount = 0;
+            keys.forEach(id => {
+                const item = menuItemsMap[id];
+                if (!item || !item.name) return;
+
+                const matchesCategory = (selectedCategory === "All") || (item.category && item.category.trim() === selectedCategory);
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery) || (item.category && item.category.toLowerCase().includes(searchQuery));
+
+                if (matchesCategory && matchesSearch) {
+                    filteredCount++;
+                    const qty = cart[id] || 0;
+                    const isAvailable = item.available !== false;
+                    const itemImg = item.img || ""; 
+                    const typeIcon = item.type === 'Non-Veg' ? '<span style="color:red; font-size:10px;">🔴</span>' : '<span class="veg-icon"></span>';
+
+                    let controlsHTML = isAvailable ? `
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="updateQty('${id}', -1)">-</button>
+                            <span class="qty-count" id="qty-${id}">${qty}</span>
+                            <button class="qty-btn" onclick="updateQty('${id}', 1)">+</button>
+                        </div>` : `<span style="font-size: 12px; font-weight: 700; color: var(--accent); background: #fee2e2; padding: 6px 12px; border-radius: 8px;">Out of Stock</span>`;
+
+                    container.innerHTML += `
+                        <div class="menu-item" style="opacity: ${isAvailable ? '1' : '0.75'};">
+                            <div class="item-img-container">
+                                <img src="${itemImg}" alt="${item.name}" loading="lazy">
+                                <span class="cat-tag">${item.category || 'General'}</span>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-details"><h3>${typeIcon} ${item.name}</h3></div>
+                                <div class="item-footer-row">
+                                    <div class="price">₹${item.price}</div>
+                                    ${controlsHTML}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (filteredCount === 0) container.innerHTML = `<div class="no-results">😕 Is naam se koi item nahi mila.</div>`;
+        }
+
+        function updateQty(id, change) {
+            if (!cart[id]) cart[id] = 0;
+            cart[id] += change;
+            if (cart[id] < 0) cart[id] = 0;
+            const qtyEl = document.getElementById(`qty-${id}`);
+            if (qtyEl) qtyEl.innerText = cart[id];
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            Object.keys(menuItemsMap).forEach(id => {
+                const item = menuItemsMap[id];
+                if (item && item.price) total += Number(item.price) * (cart[id] || 0);
+            });
+            document.getElementById("totalAmount").innerText = total;
+            return total;
+        }
+
+        function openCartModal() {
+            if (!localStorage.getItem(getTenantStorageKey("savedCustomerName"))) { document.getElementById("customerModal").style.display = "flex"; return; }
+            if (calculateTotal() === 0) { alert("Kripya kam se kam 1 item chunein!"); return; }
+            renderCartModalItems();
+            document.getElementById("cartModal").style.display = "flex";
+        }
+
+        function closeCartModal() { document.getElementById("cartModal").style.display = "none"; }
+
+        function renderCartModalItems() {
+            const listEl = document.getElementById("cartModalItemsList");
+            listEl.innerHTML = "";
+            let modalTotal = 0;
+            Object.keys(menuItemsMap).forEach(id => {
+                const item = menuItemsMap[id];
+                const qty = cart[id] || 0;
+                if (qty > 0 && item) {
+                    const subtotal = Number(item.price) * qty;
+                    modalTotal += subtotal;
+                    listEl.innerHTML += `
+                        <li class="cart-item-row">
+                            <div><div style="font-weight:700;">${item.name}</div><div style="font-size:13px; color:var(--text-muted);">₹${item.price} × ${qty} = <b>₹${subtotal}</b></div></div>
+                            <div class="qty-controls"><button class="qty-btn" onclick="updateCartModalQty('${id}', -1)">-</button><span class="qty-count">${qty}</span><button class="qty-btn" onclick="updateCartModalQty('${id}', 1)">+</button></div>
+                        </li>`;
+                }
+            });
+            document.getElementById("cartModalTotal").innerText = `₹${modalTotal}`;
+        }
+
+        function updateCartModalQty(id, change) {
+            if (!cart[id]) cart[id] = 0;
+            cart[id] += change;
+            if (cart[id] < 0) cart[id] = 0;
+            const qtyEl = document.getElementById(`qty-${id}`);
+            if (qtyEl) qtyEl.innerText = cart[id];
+            calculateTotal();
+            renderCartModalItems();
+        }
+
+        async function verifyLocationAndOrder() {
+            if (calculateTotal() === 0) { closeCartModal(); return; }
+
+            if (!tenantLocationConfig) {
+                await loadTenantLocation();
+            }
+
+            if (!tenantLocationConfig) {
+                closeCartModal();
+                placeOrder();
+                return;
+            }
+
+            if (!navigator.geolocation) { alert("Geolocation supported nahi hai!"); return; }
+            const btn = document.getElementById("finalConfirmOrderBtn");
+            btn.disabled = true; btn.innerText = "Location jaanchi ja rahi hai...";
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const dist = calculateDistance(tenantLocationConfig.lat, tenantLocationConfig.lng, pos.coords.latitude, pos.coords.longitude);
+                    if (dist <= tenantLocationConfig.radiusMeters) { closeCartModal(); placeOrder(); }
+                    else { alert(`Aap restaurant ke andar nahi hain! (${Math.round(dist)}m door).`); btn.disabled = false; btn.innerText = "Final Confirm & Place Order 🚀"; }
+                },
+                () => { alert("Location permission dena anivarya hai!"); btn.disabled = false; btn.innerText = "Final Confirm & Place Order 🚀"; },
+                { enableHighAccuracy: true }
+            );
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        async function placeOrder() {
+            const customerName = localStorage.getItem(getTenantStorageKey("savedCustomerName")), customerPhone = localStorage.getItem(getTenantStorageKey("savedCustomerPhone"));
+            let orderedItems = [];
+            Object.keys(menuItemsMap).forEach(id => {
+                if (cart[id] > 0) {
+                    const item = menuItemsMap[id];
+                    orderedItems.push({ name: item.name, price: item.price, quantity: cart[id], subtotal: Number(item.price) * cart[id] });
+                }
+            });
+
+            const orderData = {
+                tenantId: currentTenantId,
+                customerName, customerPhone, tableNumber: currentTable, items: orderedItems,
+                totalBill: calculateTotal(), customerNote: document.getElementById("customerNote").value.trim() || 'N/A',
+                orderTime: new Date().toLocaleString("hi-IN"), timestamp: new Date().getTime()
+            };
+
+            try {
+                await fetch(FIREBASE_URL + "orders.json", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderData) });
+                await fetch(FIREBASE_URL + "billing.json", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderData) }).catch(err => {});
+                let savedOrders = JSON.parse(localStorage.getItem(getTenantStorageKey("customerActiveOrders"))) || [];
+                savedOrders.push(orderData);
+                localStorage.setItem(getTenantStorageKey("customerActiveOrders"), JSON.stringify(savedOrders));
+
+                cart = {}; document.getElementById("searchInput").value = ""; document.getElementById("customerNote").value = "";
+                renderMenu(); calculateTotal(); checkCustomerActiveOrders(customerPhone);
+                document.getElementById("gameModal").style.display = "flex";
+            } catch (error) { alert("Error: " + error.message); }
+            finally { const btn = document.getElementById("finalConfirmOrderBtn"); btn.disabled = false; btn.innerText = "Final Confirm & Place Order 🚀"; }
+        }
+
+        function closeGamePopup() { document.getElementById("gameModal").style.display = "none"; }
+
+        let board = ['', '', '', '', '', '', '', '', ''], currentPlayer = 'X', isGameActive = true;
+        function makeMove(index) {
+            if (board[index] === '' && isGameActive) {
+                board[index] = currentPlayer;
+                const btn = document.getElementById(`cell-${index}`);
+                btn.innerText = currentPlayer; btn.className = `ttt-cell ${currentPlayer === 'X' ? 'cell-x' : 'cell-o'}`;
+                checkWinner();
+                if (isGameActive) { currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; document.getElementById('tttStatus').innerText = `Player ${currentPlayer} ki baari hai`; }
+            }
+        }
+        function checkWinner() {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            let combo = null;
+            for (let c of wins) { if (board[c[0]] && board[c[0]] === board[c[1]] && board[c[1]] === board[c[2]]) { combo = c; break; } }
+            if (combo) { combo.forEach(i => document.getElementById(`cell-${i}`).classList.add('cell-winning')); document.getElementById('tttStatus').innerText = `🎉 Player ${currentPlayer} Jeet Gaya!`; isGameActive = false; }
+            else if (!board.includes('')) { document.getElementById('tttStatus').innerText = `🤝 Match Draw Ho Gaya!`; isGameActive = false; }
+        }
+        function resetTTT() {
+            board = ['', '', '', '', '', '', '', '', '']; currentPlayer = 'X'; isGameActive = true;
+            document.getElementById('tttStatus').innerText = `Player X ki baari hai`;
+            for (let i = 0; i < 9; i++) { const c = document.getElementById(`cell-${i}`); c.innerText = ''; c.className = 'ttt-cell'; }
+        }
+    </script>
+</body>
+</html>

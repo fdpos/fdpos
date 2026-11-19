@@ -1,0 +1,690 @@
+<!--
+  ==========================================================================
+  © 2026 Fageshwar Dewangan. All Rights Reserved.
+  System: Moonlight Restaurant Kitchen Counter & POS System
+  Registered Owner & Developer: Fageshwar Dewangan
+  Unauthorized copying, redistribution, or commercial use is strictly prohibited.
+  ==========================================================================
+-->
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Fageshwar Dewangan">
+    <meta name="copyright" content="© 2026 Fageshwar Dewangan. All Rights Reserved.">
+    <title>Moonlight Restaurant • Kitchen Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --success: #10b981;
+            --success-dark: #059669;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            padding: 24px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header { 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            color: white; 
+            text-align: center; 
+            padding: 18px 24px; 
+            border-radius: 16px; 
+            margin-bottom: 24px; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .brand-logo-area { display: flex; align-items: center; gap: 14px; }
+        .brand-logo-icon { 
+            width: 46px; 
+            height: 46px; 
+            background: var(--primary); 
+            color: white; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 22px; 
+            font-weight: 800; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); 
+        }
+        .brand-texts h1 { font-size: 19px; font-weight: 800; letter-spacing: -0.025em; text-align: left; }
+        .brand-texts p { font-size: 12px; color: #94a3b8; text-align: left; margin-top: 2px; }
+        
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        
+        .audio-btn { 
+            background: rgba(255, 255, 255, 0.1); 
+            color: #facc15; 
+            border: 1px solid rgba(250, 204, 21, 0.3); 
+            padding: 8px 16px; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .audio-btn:hover { background: rgba(250, 204, 21, 0.2); }
+
+        .logout-btn { 
+            background: #ef4444; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        .logout-btn:hover { background: #dc2626; transform: translateY(-1px); }
+
+        .container { flex: 1; }
+
+        /* ✨ Kitchen Navigation Tabs (Live Orders & History) */
+        .nav-tabs { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 24px; 
+            background: var(--card-bg); 
+            padding: 8px; 
+            border-radius: 14px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+        }
+        .nav-btn { 
+            flex: 1; 
+            padding: 10px 14px; 
+            border: none; 
+            background: transparent; 
+            color: var(--text-muted); 
+            font-size: 13px; 
+            font-weight: 600; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+        }
+        .nav-btn:hover { color: var(--primary); background: #f1f5f9; }
+        .nav-btn.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); 
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* History Date Filter Bar */
+        .history-filter-bar {
+            background: var(--card-bg);
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .history-filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .history-filter-bar label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .history-date-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 13px;
+            outline: none;
+            background: #f8fafc;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+        .clear-date-btn {
+            background: #e2e8f0;
+            color: var(--text-main);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .clear-date-btn:hover { background: #cbd5e1; }
+
+        .orders-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        
+        .order-card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 20px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); 
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--primary); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+        }
+
+        .history-card { border-top: 5px solid var(--success); background: #fafafa; }
+
+        .order-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 12px; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 12px; 
+        }
+        
+        .customer-info p { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .customer-phone { font-size: 12px !important; color: var(--text-muted) !important; margin-top: 2px; }
+
+        .table-badge { 
+            background: #e0e7ff; 
+            color: var(--primary); 
+            padding: 6px 12px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 12px; 
+            letter-spacing: 0.025em;
+        }
+
+        .order-time { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        
+        .kitchen-note-box {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            color: #713f12;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .item-list { list-style: none; margin-bottom: 20px; }
+        .item-list li { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 0; 
+            border-bottom: 1px dashed var(--border-color); 
+            font-size: 14px; 
+            font-weight: 500;
+        }
+        .item-qty { font-weight: 700; color: var(--primary); background: #f1f5f9; padding: 2px 8px; border-radius: 6px; font-size: 13px; }
+
+        .order-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-top: 1px solid var(--border-color); 
+            padding-top: 14px; 
+        }
+        
+        .items-count-label { font-weight: 700; font-size: 13px; color: var(--text-muted); }
+        
+        .done-btn { 
+            background: var(--success); 
+            color: white; 
+            border: none; 
+            padding: 9px 18px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            transition: all 0.2s ease;
+        }
+        .done-btn:hover { background: var(--success-dark); transform: translateY(-1px); }
+        .done-btn:active { transform: scale(0.97); }
+
+        .no-orders { 
+            text-align: center; 
+            grid-column: 1 / -1; 
+            padding: 60px 20px; 
+            color: var(--text-muted); 
+            font-size: 16px; 
+            font-weight: 500;
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Developer Copyright Footer */
+        .dev-copyright-footer {
+            margin-top: 36px;
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .dev-copyright-footer strong { color: var(--text-main); font-weight: 700; }
+    </style>
+    <script src="tenant-config.js"></script>
+</head>
+<body>
+    <!-- Staff Secure Login Modal -->
+    <div id="staffLoginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div style="background: white; padding: 35px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15); text-align: center; border: 1px solid var(--border-color);">
+            <div style="width: 50px; height: 50px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 16px;">🌙</div>
+            <h2 style="color: var(--text-main); margin-bottom: 4px; font-size: 20px; font-weight: 800;">Moonlight Restaurant</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Kitchen Staff Login — Kripya email aur password darj karein.</p>
+            
+            <div style="margin-bottom: 14px; text-align: left;">
+                <input type="email" id="staffEmail" placeholder="Email address" style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.2s; background: #f8fafc;">
+            </div>
+            <div style="margin-bottom: 24px; text-align: left;">
+                <input type="password" id="staffPass" placeholder="Password" style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.2s; background: #f8fafc;">
+            </div>
+
+            <button onclick="loginStaff()" style="background: var(--primary); color: white; border: none; width: 100%; padding: 13px; font-size: 15px; font-weight: 600; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: background 0.2s;">Login Karein ➔</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="brand-logo-area">
+            <div class="brand-logo-icon">M</div>
+            <div class="brand-texts">
+                <h1>Moonlight Restaurant</h1>
+                <p>👨‍🍳 Kitchen Live Orders Counter</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="audio-btn" id="audioEnableBtn" onclick="enableAudio()">🔊 Enable Audio</button>
+            <button class="logout-btn" onclick="logoutStaff()">Logout 🚪</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- ✨ Kitchen Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="switchKitchenTab('live')">⚡ Live Orders</button>
+            <button class="nav-btn" onclick="switchKitchenTab('history')">📂 Order History</button>
+        </div>
+
+        <!-- 1. Live Orders Tab Content -->
+        <div id="liveTab" class="tab-content active">
+            <div class="orders-container" id="ordersContainer">
+                <div class="no-orders">नए ऑर्डर्स का इंतज़ार है...</div>
+            </div>
+        </div>
+
+        <!-- 2. Order History Tab Content -->
+        <div id="historyTab" class="tab-content">
+            <div class="history-filter-bar">
+                <div class="history-filter-controls">
+                    <label for="historyDateFilter">📅 Date Select Karein:</label>
+                    <input type="date" id="historyDateFilter" class="history-date-input" onchange="renderFilteredKitchenHistory()">
+                    <button class="clear-date-btn" onclick="clearHistoryDateFilter()">All Dates Dikhaein</button>
+                </div>
+                <span id="historyCountBadge" style="font-size: 13px; font-weight: 700; color: var(--primary);"></span>
+            </div>
+
+            <div class="orders-container" id="historyOrdersContainer">
+                <div class="no-orders">हिस्ट्री लोड हो रही है...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registered Copyright Footer -->
+    <footer class="dev-copyright-footer">
+        <div>© 2026 <strong>Fageshwar Dewangan</strong> • All Rights Reserved.</div>
+        <div>Registered Software & Digital POS System owned by <strong>Fageshwar Dewangan</strong>. Unauthorized copying or reproduction is prohibited.</div>
+    </footer>
+
+    <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <!-- Firebase SDK v8 Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        const currentTenantId = typeof getTenantId === "function" ? getTenantId() : "demo";
+        const FIREBASE_URL = typeof getTenantDbUrl === "function" ? getTenantDbUrl() : "https://fd-pos-default-rtdb.firebaseio.com/tenants/demo/";
+        const firebaseConfig = typeof FDPOS_FIREBASE_CONFIG !== "undefined" ? FDPOS_FIREBASE_CONFIG : {
+            apiKey: "AIzaSyA0_0b0R55NCfHzYU5WdkQ2ig56K1R1A6k",
+            authDomain: "fd-pos.firebaseapp.com",
+            projectId: "fd-pos",
+            storageBucket: "fd-pos.firebasestorage.app",
+            messagingSenderId: "605225520918",
+            appId: "1:605225520918:web:38935602b4e90df4b1ca37",
+            measurementId: "G-Q4HLX6S3SM",
+            databaseURL: "https://fd-pos-default-rtdb.firebaseio.com"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            .catch((error) => {
+                console.error("Persistence error:", error);
+            });
+
+        function enableAudio() {
+            const sound = document.getElementById("notificationSound");
+            sound.play().then(() => {
+                sound.pause();
+                sound.currentTime = 0;
+                document.getElementById("audioEnableBtn").style.display = "none";
+                alert("🔊 Sound Enabled Successfully!");
+            }).catch(e => console.log("Audio unlock failed:", e));
+        }
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById("staffLoginModal").style.display = "none";
+                initRealtimeOrders();
+                fetchKitchenHistory();
+            } else {
+                document.getElementById("staffLoginModal").style.display = "flex";
+            }
+        });
+
+        function loginStaff() {
+            const email = document.getElementById("staffEmail").value.trim();
+            const pass = document.getElementById("staffPass").value.trim();
+
+            if (!email || !pass) {
+                alert("Kripya Email aur Password dono bharein!");
+                return;
+            }
+
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .catch((error) => {
+                    alert("❌ Login Failed: " + error.message);
+                });
+        }
+
+        function logoutStaff() {
+            firebase.auth().signOut().then(() => {
+                location.reload();
+            });
+        }
+
+        // ✨ Tab Switching Function for Kitchen
+        function switchKitchenTab(tabName) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+            if (tabName === 'live') {
+                document.querySelector('.nav-btn:nth-child(1)').classList.add('active');
+                document.getElementById('liveTab').classList.add('active');
+            } else if (tabName === 'history') {
+                document.querySelector('.nav-btn:nth-child(2)').classList.add('active');
+                document.getElementById('historyTab').classList.add('active');
+                fetchKitchenHistory();
+            }
+        }
+
+        let isInitialLoad = true;
+        let globalKitchenHistoryData = {};
+
+        function getOrderLocalYYYYMMDD(order) {
+            let d = null;
+            if (order?.timestamp && !isNaN(Number(order.timestamp))) {
+                d = new Date(Number(order.timestamp));
+            } else if (order?.createdAt && !isNaN(Number(order.createdAt))) {
+                d = new Date(Number(order.createdAt));
+            } else if (order?.orderTime || order?.paidAt) {
+                const raw = (order.orderTime || order.paidAt).toString();
+                // Handle formats like "18/11/2026, 9:04:00 am" or "18/11/2026"
+                const dmyMatch = raw.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+                if (dmyMatch) {
+                    const day = dmyMatch[1].padStart(2, '0');
+                    const month = dmyMatch[2].padStart(2, '0');
+                    const year = dmyMatch[3];
+                    return `${year}-${month}-${day}`;
+                }
+                const parsed = new Date(raw);
+                if (!isNaN(parsed.getTime())) d = parsed;
+            }
+            if (!d || isNaN(d.getTime())) return "";
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function initRealtimeOrders() {
+            const dbRef = firebase.database().ref(`tenants/${currentTenantId}/orders`);
+
+            dbRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                const container = document.getElementById("ordersContainer");
+                container.innerHTML = "";
+
+                if (!data) {
+                    container.innerHTML = `<div class="no-orders">फिलहाल कोई नया ऑर्डर नहीं है।</div>`;
+                    isInitialLoad = false;
+                    return;
+                }
+
+                const orderIds = Object.keys(data);
+                let validOrdersCount = 0;
+
+                orderIds.forEach(orderId => {
+                    const order = data[orderId];
+                    if (!order || !order.customerName || !order.items) return;
+
+                    validOrdersCount++;
+                    let itemsHTML = "";
+                    order.items.forEach(item => {
+                        const qty = item.quantity ?? item.qty ?? 1;
+                        itemsHTML += `<li><span>${item.name}</span><span class="item-qty">x ${qty}</span></li>`;
+                    });
+
+                    let noteHTML = "";
+                    if (order.customerNote && order.customerNote !== 'N/A') {
+                        noteHTML = `<div class="kitchen-note-box">📝 <b>Note:</b> ${order.customerNote}</div>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="order-card" id="card-${orderId}">
+                            <div>
+                                <div class="order-header">
+                                    <div class="customer-info">
+                                        <p>${order.customerName}</p>
+                                        <p class="customer-phone">📱 ${order.customerPhone || 'N/A'}</p>
+                                    </div>
+                                    <span class="table-badge">Table: ${order.tableNumber}</span>
+                                </div>
+                                <div class="order-time">⏰ ${order.orderTime}</div>
+                                ${noteHTML}
+                                <ul class="item-list">${itemsHTML}</ul>
+                            </div>
+                            <div class="order-footer">
+                                <span class="items-count-label">🍽️ Total Items: ${order.items.length}</span>
+                                <button class="done-btn" onclick="completeOrder('${orderId}')">Order Done</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (validOrdersCount === 0) {
+                    container.innerHTML = `<div class="no-orders">फिलहाल कोई नया ऑर्डर नहीं है।</div>`;
+                } else if (!isInitialLoad) {
+                    playAlertSound();
+                }
+
+                isInitialLoad = false;
+            });
+        }
+
+        // ✨ Fetch Kitchen History (Completed/Billed orders)
+        async function fetchKitchenHistory() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            try {
+                const token = await user.getIdToken();
+                const res = await fetch(`${FIREBASE_URL}history.json?auth=${token}`);
+                const data = await res.json();
+                globalKitchenHistoryData = data || {};
+                renderFilteredKitchenHistory();
+            } catch (error) {
+                console.error("History fetch error:", error);
+            }
+        }
+
+        function clearHistoryDateFilter() {
+            const dateInput = document.getElementById("historyDateFilter");
+            if (dateInput) dateInput.value = "";
+            renderFilteredKitchenHistory();
+        }
+
+        function renderFilteredKitchenHistory() {
+            const container = document.getElementById("historyOrdersContainer");
+            const countBadge = document.getElementById("historyCountBadge");
+            const selectedDate = document.getElementById("historyDateFilter")?.value || "";
+            if (!container) return;
+
+            container.innerHTML = "";
+            const keys = Object.keys(globalKitchenHistoryData).reverse();
+
+            if (keys.length === 0) {
+                container.innerHTML = `<div class="no-orders">कोई पुरानी हिस्ट्री उपलब्ध नहीं है।</div>`;
+                if (countBadge) countBadge.innerText = "";
+                return;
+            }
+
+            let count = 0;
+
+            keys.forEach(id => {
+                const order = globalKitchenHistoryData[id];
+                if (order && order.customerName && order.items) {
+                    if (selectedDate) {
+                        const orderDateStr = getOrderLocalYYYYMMDD(order);
+                        if (orderDateStr !== selectedDate) return;
+                    }
+
+                    count++;
+                    let itemsHTML = "";
+                    order.items.forEach(item => {
+                        const qty = item.quantity ?? item.qty ?? 1;
+                        itemsHTML += `<li><span>${item.name}</span><span class="item-qty">x ${qty}</span></li>`;
+                    });
+
+                    let noteHTML = "";
+                    if (order.customerNote && order.customerNote !== 'N/A') {
+                        noteHTML = `<div class="kitchen-note-box">📝 <b>Note:</b> ${order.customerNote}</div>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="order-card history-card">
+                            <div>
+                                <div class="order-header">
+                                    <div class="customer-info">
+                                        <p>${order.customerName}</p>
+                                        <p class="customer-phone">📱 ${order.customerPhone || 'N/A'}</p>
+                                    </div>
+                                    <span class="table-badge">Table: ${order.tableNumber}</span>
+                                </div>
+                                <div class="order-time">⏰ ${order.orderTime || order.paidAt || ''}</div>
+                                ${noteHTML}
+                                <ul class="item-list">${itemsHTML}</ul>
+                            </div>
+                            <div class="order-footer">
+                                <span class="items-count-label">🍽️ Total Items: ${order.items.length}</span>
+                                <span style="font-size: 12px; font-weight: 700; color: var(--success);">✓ Completed</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (countBadge) {
+                countBadge.innerText = selectedDate ? `${selectedDate}: ${count} Orders` : `Total Orders: ${count}`;
+            }
+
+            if (count === 0) {
+                container.innerHTML = `<div class="no-orders">${selectedDate ? 'Chuni gayi tarikh (' + selectedDate + ') ko koi order nahi mila.' : 'कोई पुरानी हिस्ट्री उपलब्ध नहीं है।'}</div>`;
+            }
+        }
+
+        async function completeOrder(orderId) {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            if (confirm("क्या यह ऑर्डर पूरा हो गया है? इसे Billing Counter पर भेजें?")) {
+                try {
+                    const token = await user.getIdToken();
+
+                    const getRes = await fetch(`${FIREBASE_URL}orders/${orderId}.json?auth=${token}`);
+                    const orderData = await getRes.json();
+
+                    if (!orderData) {
+                        alert("ऑर्डर नहीं मिला!");
+                        return;
+                    }
+
+                    await fetch(`${FIREBASE_URL}billing.json?auth=${token}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    const deleteRes = await fetch(`${FIREBASE_URL}orders/${orderId}.json?auth=${token}`, {
+                        method: "DELETE"
+                    });
+
+                    if (deleteRes.ok) {
+                        const card = document.getElementById(`card-${orderId}`);
+                        if(card) card.remove();
+                        alert("ऑर्डर सफलतापूर्वक Billing Counter पर भेज दिया गया है!");
+                    }
+                } catch (error) {
+                    alert("एरर: " + error.message);
+                }
+            }
+        }
+
+        function playAlertSound() {
+            const sound = document.getElementById("notificationSound");
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log("Sound play error (User interaction needed):", e));
+        }
+    </script>
+</body>
+</html>
